@@ -1,0 +1,66 @@
+[
+ {
+  "date": "2026-11-13",
+  "show": "TOMORROW X TOGETHER WORLD TOUR <STEAL THE WIND> IN SEOUL",
+  "venue": "KSPO DOME",
+  "start": "19:00",
+  "runtime_min": 120,
+  "note": "로거 수집 시작일(10시대부터)"
+ },
+ {
+  "date": "2026-11-14",
+  "show": "TOMORROW X TOGETHER WORLD TOUR <STEAL THE WIND> IN SEOUL",
+  "venue": "KSPO DOME",
+  "start": "18:00",
+  "runtime_min": 120,
+  "note": "같은 날 올림픽홀 CRAVITY 18:00"
+ },
+ {
+  "date": "2026-11-15",
+  "show": "TOMORROW X TOGETHER WORLD TOUR <STEAL THE WIND> IN SEOUL",
+  "venue": "KSPO DOME",
+  "start": "17:00",
+  "runtime_min": 120,
+  "note": "같은 날 올림픽홀 CRAVITY 16:00"
+ },
+ {
+  "date": "2026-11-21",
+  "show": "2026-27 로이킴 LIVE TOUR [R:O:Y] in SEOUL",
+  "venue": "KSPO DOME",
+  "start": "18:00",
+  "runtime_min": 120,
+  "note": ""
+ },
+ {
+  "date": "2026-11-22",
+  "show": "2026-27 로이킴 LIVE TOUR [R:O:Y] in SEOUL",
+  "venue": "KSPO DOME",
+  "start": "17:00",
+  "runtime_min": 120,
+  "note": ""
+ },
+ {
+  "date": "2026-11-27",
+  "show": "[서울] 2026 조용필 & 위대한탄생 콘서트",
+  "venue": "KSPO DOME",
+  "start": "19:00",
+  "runtime_min": 130,
+  "note": "예정 — 같은 날 다이나믹 듀오 20:00(공연장 미기재)"
+ },
+ {
+  "date": "2026-11-28",
+  "show": "[서울] 2026 조용필 & 위대한탄생 콘서트",
+  "venue": "KSPO DOME",
+  "start": "18:00",
+  "runtime_min": 130,
+  "note": "예정 — 다이나믹 듀오 18:00"
+ },
+ {
+  "date": "2026-11-29",
+  "show": "[서울] 2026 조용필 & 위대한탄생 콘서트",
+  "venue": "KSPO DOME",
+  "start": "17:00",
+  "runtime_min": 130,
+  "note": "예정 — 다이나믹 듀오 17:00"
+ }
+]
