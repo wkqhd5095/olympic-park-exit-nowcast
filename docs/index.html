@@ -3,71 +3,88 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>올림픽공원 공연 후 출구별 출차 나우캐스트 · 뛰뛰빵빵</title>
-<meta name="description" content="공연 시작 30분 뒤 실시간 주차현황으로 남2·동2·북2문 공연 차량 출차량을 예측합니다.">
+<title>올림픽공원 출구별 출차 나우캐스트</title>
+<meta name="description" content="공연 시작 30분 뒤 주차장 차량 수로, 공연이 끝난 뒤 남2·동2·북2문 중 어디가 붐빌지 미리 알려 드립니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="top">
-  <div class="wrap">
-    <p class="eyebrow">2026 한국체육산업개발(주) 공공데이터 활용 경진대회 · 팀 뛰뛰빵빵</p>
-    <h1>공연 끝나고, 어느 출구로 차가 몰릴까?</h1>
-    <p class="lead">공연 시작 30분 뒤 <b>실시간 주차현황</b> 한 번으로 남2문·동2문·북2문의 <b>공연 관람 차량 출차량</b>을 예측합니다. 출차가 몰리기 약 2.5~3시간 전에 알 수 있습니다.</p>
-  </div>
-</header>
+
+<header class="band band-top"><div class="band-inner">올림픽공원 출구별 출차 나우캐스트</div></header>
 
 <main class="wrap">
-  <section class="card" id="pick">
-    <div class="row">
-      <label for="date">공연일</label>
-      <select id="date"></select>
-      <span id="who" class="role">
-        <button data-role="op" class="on">운영자</button><button data-role="vis">관람객</button>
-      </span>
-    </div>
-    <p id="showline" class="muted"></p>
-    <div id="status" class="status"></div>
-  </section>
 
-  <section id="result" class="gates"></section>
-  <p id="resnote" class="note"></p>
-
-  <section class="card">
-    <h2>이 예측은 얼마나 맞았나 — 2025년 검증</h2>
-    <p class="muted">1~6월 공연일로 학습하고 7~12월 공연(10개 공연, 27일, 81개 출구-일)에 그대로 적용했습니다. 점 = 출구 하나의 하루, 막대 = 80% 예측 구간, 대각선 = 정확히 맞춘 경우.</p>
-    <div class="kpis" id="kpis"></div>
-    <div id="chart" class="chart"></div>
-  </section>
-
-  <section class="card">
-    <h2>어떻게 계산하나</h2>
-    <ol class="how">
-      <li><b>새벽 3시</b>와 <b>공연 시작 30분 뒤</b>의 동2·남2·북2문 주차 대수(기관 실시간 주차현황 API)를 읽습니다. 2025년 학습·검증에서는 같은 값을 입출차 기록으로 재구성했습니다(세 문으로 들어와 그 시각까지 나가지 않은 차량 수).</li>
-      <li>두 값의 차이 <b>S</b> = 오늘 공연 때문에 늘어난 차량 수입니다. (API에는 입출차 기록에 없는 상시 차량 약 700~870대가 얹혀 있어, 수준 대신 증가분을 씁니다.)</li>
-      <li>2025년 입출차 기록 230만 건으로 학습한 관계식에 넣습니다: <code>log(출구별 공연 차량+1) = 출구별 상수 + <span id="bcoef">1.12</span> × log S</code>. S가 10% 늘면 출구별 출차는 약 11% 늡니다.</li>
-      <li>80% 구간은 학습 잔차의 10·90% 분위입니다. 계수는 <span id="frozen"></span>에 고정했습니다.</li>
+  <!-- ── 첫 화면: 서비스 소개(3단계) + 화면 고르기 ── -->
+  <div id="home" class="screen">
+  <section class="intro">
+    <h1 class="intro-q">공연이 끝나면, <em>어느 출구</em>가 붐빌까요?</h1>
+    <ol class="steps">
+      <li>
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="9" fill="#0047AB"/><path d="M18 35V13h8.5a6.5 6.5 0 0 1 0 13H18" fill="none" stroke="#fff" stroke-width="4.5" stroke-linejoin="round"/></svg></span>
+        <b>주차장 차를 세요</b>
+        <span>공연 시작 30분 뒤</span>
+      </li>
+      <li class="arrow" aria-hidden="true">→</li>
+      <li>
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="9" fill="#0047AB"/><rect x="13" y="27" width="6" height="9" rx="1.5" fill="#fff"/><rect x="21" y="18" width="6" height="18" rx="1.5" fill="#fff"/><rect x="29" y="22" width="6" height="14" rx="1.5" fill="#fff"/></svg></span>
+        <b>출구마다 나갈 차를 계산해요</b>
+        <span>남2문 · 동2문 · 북2문</span>
+      </li>
+      <li class="arrow" aria-hidden="true">→</li>
+      <li>
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="9" fill="#2E9E5B"/><path d="M14 24h17m-7-8 8 8-8 8" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <b>덜 붐비는 출구를 알려 줘요</b>
+        <span>차가 몰리기 약 2시간 반 전에</span>
+      </li>
     </ol>
-    <h3>한계 (숨기지 않습니다)</h3>
-    <ul class="how">
-      <li>예측 대상은 <b>공연 관람 차량</b>입니다. 같은 시간 공원·체육시설 이용 차량(출구 출차의 약 2/3)은 포함하지 않습니다.</li>
-      <li>출구별 배분은 관객층에 따라 크게 달라질 수 있습니다(예: 2025 god 공연 남2문 실제 700대 안팎, 예측 280대 안팎).</li>
-      <li>출차 피크 <b>시각</b>은 예측하지 않고 2025년 분포(예정 종료 후 분)로만 안내합니다. 대기열·대기 시간은 데이터로 확인할 수 없어 다루지 않습니다.</li>
-      <li>실시간 API는 3개 문 <b>합계</b>만 줍니다. 2026년 공연일의 출구별 정답은 아직 공개되지 않아, 2026년은 주차장 감소량(합계)으로만 사후 점검합니다. 2025년 기관 집계 주차대수로 입력을 바꿔 넣으면 평균 오차가 52대→64대로 늘었습니다(23개 공연일).</li>
-    </ul>
   </section>
 
-  <section class="card small">
-    <h2>데이터</h2>
-    <ul class="how">
-      <li>올림픽공원 입출차정보(전체구역), 15159093 — 2025년 입·출차 기록(중복 제거 후 2,303,876건)</li>
-      <li>실시간 주차현황, 15168686 — 5분 간격으로 <a href="https://github.com/wkqhd5095/kspo-parking-logger/tree/parking-data/data/parking">자체 기록</a>(11/11 시작, 11/13부터 상시)</li>
-      <li>올림픽공원 차량입출차·공연·날씨 연계 데이터, 15164822 — 관람객 수·재차대수 검산</li>
-      <li>기관 홈페이지 공연 일정 — 시작 시각·러닝타임</li>
-    </ul>
-    <p class="muted">출처: 한국체육산업개발(주), 공공데이터포털(data.go.kr). 개인정보를 수집하지 않습니다. 서버 없이 동작하는 정적 페이지입니다.</p>
+  <section class="choose">
+    <p class="choose-label">어떤 화면을 볼까요?</p>
+    <div class="choices">
+      <a class="choice" href="#vis">
+        <span class="cic" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#2E9E5B"/><circle cx="17" cy="20" r="2.6" fill="#16202e"/><circle cx="31" cy="20" r="2.6" fill="#16202e"/><path d="M15 29 Q24 37 33 29" fill="none" stroke="#16202e" stroke-width="3" stroke-linecap="round"/></svg></span>
+        <b>관람객용</b><span>어느 출구로 나가면 덜 붐빌까?</span><i>보러 가기 →</i></a>
+      <a class="choice" href="#op">
+        <span class="cic" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="3" y="3" width="42" height="42" rx="11" fill="#0047AB"/><rect x="12" y="26" width="6" height="11" rx="1.5" fill="#fff"/><rect x="21" y="15" width="6" height="22" rx="1.5" fill="#fff"/><rect x="30" y="20" width="6" height="17" rx="1.5" fill="#fff"/></svg></span>
+        <b>운영자용</b><span>어느 출구에 인력을 먼저 둘까?</span><i>보러 가기 →</i></a>
+      <a class="choice" href="#proof">
+        <span class="cic" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="3" y="3" width="42" height="42" rx="11" fill="#5b6677"/><path d="M14 25 l7 7 l13 -15" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <b>검증 결과</b><span>예측이 얼마나 정확한가?</span><i>보러 가기 →</i></a>
+    </div>
   </section>
+  </div>
+
+  <!-- ── 결과 화면 ── -->
+  <div id="main" class="screen">
+  <nav class="topbar" aria-label="화면 이동">
+    <a href="#home" class="back">← 처음으로</a>
+    <div class="seg" role="tablist">
+      <a href="#vis" data-view="vis">관람객용</a><a href="#op" data-view="op">운영자용</a><a href="#proof" data-view="proof">검증 결과</a>
+    </div>
+  </nav>
+
+  <!-- 공연 고르기 (관람객·운영자 공통) -->
+  <section id="picker" class="picker">
+    <p class="picker-label">공연 날짜를 골라 주세요</p>
+    <div id="chips" class="chips"></div>
+    <p id="showline" class="showline"></p>
+  </section>
+
+  <section id="view-vis" class="view"></section>
+  <section id="view-op" class="view"></section>
+  <section id="view-proof" class="view"></section>
+  </div>
+
+  <p class="credit">팀 뛰뛰빵빵 (이대훈·김성주) · 2026 한국체육산업개발(주) 공공데이터 활용 경진대회 ·
+    <a href="https://github.com/wkqhd5095/olympic-park-exit-nowcast">소스 코드</a> ·
+    출처: 한국체육산업개발(주), 공공데이터포털 · 개인정보를 수집하지 않습니다</p>
 </main>
-<footer class="wrap muted">팀 뛰뛰빵빵 (이대훈·김성주) · <a href="https://github.com/wkqhd5095/olympic-park-exit-nowcast">소스 코드</a></footer>
+
+<footer class="band band-bottom"><div class="band-inner">올림픽공원 출구별 출차 나우캐스트</div></footer>
+
 <script src="app.js"></script>
 </body>
 </html>
