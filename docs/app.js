@@ -4,7 +4,7 @@
 "use strict";
 const LOGGER = "https://raw.githubusercontent.com/wkqhd5095/kspo-parking-logger/parking-data/data/parking/";
 const GATES = ["남2문", "동2문", "북2문"];
-const DOT = { "남2문": "#0047AB", "동2문": "#E07B1A", "북2문": "#2E9E5B" };
+const DOT = { "남2문": "#0369A1", "동2문": "#F97316", "북2문": "#059669" };
 const DOW = ["일", "월", "화", "수", "목", "금", "토"];
 // 기획서 수치(data/*.json에 없는 값). 바꾸면 기획서와 함께 바꿀 것.
 const PEAK_ALL = [45, 71, 97];  // 3-3: 예정 종료 → 출차 급증 시점(분), 2025 공연 94일 사분위·중앙
@@ -117,18 +117,18 @@ const lastReady = () => [...D.shows].reverse().find((s) => addMin(kst(s.date, s.
 
 /* ───────── 그림 조각 ───────── */
 function face(kind, size = 64) {
-  const c = { go: "#2E9E5B", mid: "#F2B705", stop: "#E0453A", unk: "#c9cfd8" }[kind];
+  const c = { go: "#059669", mid: "#F59E0B", stop: "#E11D48", unk: "#CBD5E1" }[kind];
   const mouth = {
     go: "M21 38 Q32 50 43 38", mid: "M22 41 L42 41", stop: "M21 45 Q32 34 43 45", unk: ""
   }[kind];
   const eyes = kind === "unk"
     ? `<text x="32" y="43" font-size="30" font-weight="900" text-anchor="middle" fill="#fff">?</text>`
-    : `<circle cx="23" cy="27" r="3.6" fill="#16202e"/><circle cx="41" cy="27" r="3.6" fill="#16202e"/>`;
-  return `<svg viewBox="0 0 64 64" width="${size}" height="${size}" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="${c}"/>${eyes}${mouth ? `<path d="${mouth}" fill="none" stroke="#16202e" stroke-width="3.6" stroke-linecap="round"/>` : ""}</svg>`;
+    : `<circle cx="23" cy="27" r="3.6" fill="#0F172A"/><circle cx="41" cy="27" r="3.6" fill="#0F172A"/>`;
+  return `<svg viewBox="0 0 64 64" width="${size}" height="${size}" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="${c}"/>${eyes}${mouth ? `<path d="${mouth}" fill="none" stroke="#0F172A" stroke-width="3.6" stroke-linecap="round"/>` : ""}</svg>`;
 }
 const CAR = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11h.5a1.5 1.5 0 0 1 1.5 1.5V17h-2v1.5a1 1 0 0 1-2 0V17H7v1.5a1 1 0 0 1-2 0V17H3v-4.5A1.5 1.5 0 0 1 4.5 11zm2.3 0h9.4l-1-3.2a1 1 0 0 0-1-.8H9.3a1 1 0 0 0-1 .8zM6.5 13a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6zm11 0a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6z"/></svg>`;
 const WORD = { go: "가장 여유", mid: "보통", stop: "가장 붐빔", unk: "아직 몰라요" };
-const COL = { go: "#2E9E5B", mid: "#F2B705", stop: "#E0453A", unk: "#c9cfd8" };
+const COL = { go: "#059669", mid: "#F59E0B", stop: "#E11D48", unk: "#CBD5E1" };
 
 // 간략 배치도: 공연장에서 세 출구로 가는 길. 길 굵기 = 나갈 차의 상대적 양
 function parkMap(levels, P, best, tagText = "추천 출구", showNum = false) {
@@ -136,24 +136,24 @@ function parkMap(levels, P, best, tagText = "추천 출구", showNum = false) {
   const lab = { "북2문": [168, 58, "end"], "동2문": [326, 236, "middle"], "남2문": [200, 296, "start"] };
   const maxP = P ? Math.max(...GATES.map((g) => P[g].p)) : 1;
   let s = `<svg viewBox="0 0 380 340" role="img" aria-label="올림픽공원 출구 간략 배치도">`;
-  s += `<rect x="40" y="52" width="286" height="238" rx="46" fill="#e7f3e4" stroke="#b9d8b2" stroke-width="2"/>`;
-  s += `<text x="58" y="108" font-size="12" fill="#6f8f68">올림픽공원</text>`;
+  s += `<rect x="40" y="52" width="286" height="238" rx="46" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="2"/>`;
+  s += `<text x="58" y="108" font-size="12" fill="#047857">올림픽공원</text>`;
   for (const g of GATES) {
     const [x, y] = pos[g], w = P ? 6 + 14 * (P[g].p / maxP) : 6;
     s += `<path d="M${dome[0]} ${dome[1]} L${x} ${y}" stroke="${COL[levels[g]]}" stroke-opacity=".55" stroke-width="${w}" stroke-linecap="round"/>`;
   }
-  s += `<circle cx="${dome[0]}" cy="${dome[1]}" r="44" fill="#fff" stroke="#0047AB" stroke-width="3"/>`;
-  s += `<text x="${dome[0]}" y="${dome[1] - 3}" font-size="14" font-weight="700" text-anchor="middle" fill="#0047AB">공연장</text>`;
-  s += `<text x="${dome[0]}" y="${dome[1] + 15}" font-size="11" text-anchor="middle" fill="#0047AB">KSPO DOME</text>`;
+  s += `<circle cx="${dome[0]}" cy="${dome[1]}" r="44" fill="#fff" stroke="#0369A1" stroke-width="3"/>`;
+  s += `<text x="${dome[0]}" y="${dome[1] - 3}" font-size="14" font-weight="700" text-anchor="middle" fill="#0369A1">공연장</text>`;
+  s += `<text x="${dome[0]}" y="${dome[1] + 15}" font-size="11" text-anchor="middle" fill="#0369A1">KSPO DOME</text>`;
   for (const g of GATES) {
     const [x, y] = pos[g], [lx, ly, an] = lab[g];
-    if (g === best) s += `<circle cx="${x}" cy="${y}" r="38" fill="none" stroke="#0047AB" stroke-width="3" stroke-dasharray="5 4"/>`;
+    if (g === best) s += `<circle cx="${x}" cy="${y}" r="38" fill="none" stroke="#0369A1" stroke-width="3" stroke-dasharray="5 4"/>`;
     s += `<g transform="translate(${x - 30} ${y - 30})">${face(levels[g], 60).replace("<svg ", '<svg x="0" y="0" ')}</g>`;
-    s += `<text x="${lx}" y="${ly}" font-size="17" font-weight="900" text-anchor="${an}" fill="#16202e">${g}</text>`;
-    if (g === best) s += `<text x="${lx}" y="${ly + 18}" font-size="13" font-weight="700" text-anchor="${an}" fill="#0047AB">${tagText}</text>`;
-    if (showNum && P) s += `<text x="${lx}" y="${ly + (g === best ? 36 : 18)}" font-size="14" font-weight="700" text-anchor="${an}" fill="#16202e">${fmt(P[g].p)}대</text>`;
+    s += `<text x="${lx}" y="${ly}" font-size="17" font-weight="900" text-anchor="${an}" fill="#0F172A">${g}</text>`;
+    if (g === best) s += `<text x="${lx}" y="${ly + 18}" font-size="13" font-weight="700" text-anchor="${an}" fill="#0369A1">${tagText}</text>`;
+    if (showNum && P) s += `<text x="${lx}" y="${ly + (g === best ? 36 : 18)}" font-size="14" font-weight="700" text-anchor="${an}" fill="#0F172A">${fmt(P[g].p)}대</text>`;
   }
-  s += `<g transform="translate(350 30)"><path d="M0 -14 L6 4 L0 0 L-6 4Z" fill="#5b6677"/><text y="18" font-size="11" text-anchor="middle" fill="#5b6677">북</text></g>`;
+  s += `<g transform="translate(350 30)"><path d="M0 -14 L6 4 L0 0 L-6 4Z" fill="#64748B"/><text y="18" font-size="11" text-anchor="middle" fill="#64748B">북</text></g>`;
   return s + "</svg>";
 }
 
@@ -168,10 +168,10 @@ function drawVis(R) {
     best = order[0];
     const tot = GATES.reduce((a, g) => a + P[g].p, 0);
     const med = GATES.reduce((a, g) => a + D.gates[g].N_median, 0), p90 = GATES.reduce((a, g) => a + D.gates[g].N_p90, 0);
-    const day = tot >= p90 ? ["평소보다 차가 아주 많은 날이에요", "#fde9e7", "#a8261d"]
-      : tot >= med ? ["평소와 비슷한 날이에요", "#fff5d6", "#8a6200"] : ["평소보다 차가 적은 날이에요", "#e6f5ec", "#1c6f3f"];
+    const day = tot >= p90 ? ["평소보다 차가 아주 많은 날이에요", "#FFE4E6", "#BE123C"]
+      : tot >= med ? ["평소와 비슷한 날이에요", "#FEF3C7", "#B45309"] : ["평소보다 차가 적은 날이에요", "#D1FAE5", "#047857"];
     hero = `<div class="hero go"><div class="face">${face("go")}</div><div>
-      <h2><b style="color:#1c6f3f">${best}</b>으로 나가면 가장 여유로워요</h2>
+      <h2><b style="color:#047857">${best}</b>으로 나가면 가장 여유로워요</h2>
       <p>차가 가장 많이 나가는 시간은 <b>${rushA} ~ ${rushB}</b> 쯤이에요.</p>
       <span class="daypill" style="background:${day[1]};color:${day[2]}">${day[0]}</span></div></div>`;
   } else {
@@ -190,7 +190,7 @@ function drawVis(R) {
   const maxP = P ? Math.max(...GATES.map((g) => P[g].p)) : 1;
   const cards = order.map((g) => {
     const lv = levels[g], n = P ? Math.max(1, Math.round(5 * P[g].p / maxP)) : 0;
-    const cars = Array.from({ length: 5 }, (_, i) => `<span style="color:${i < n ? COL[lv] : "#dde2ea"}">${CAR}</span>`).join("");
+    const cars = Array.from({ length: 5 }, (_, i) => `<span style="color:${i < n ? COL[lv] : "#E2E8F0"}">${CAR}</span>`).join("");
     const q = D.gates[g].peak_min_q;
     return `<div class="g ${lv}">
       <div class="face">${face(lv, 58)}</div>
@@ -215,26 +215,26 @@ function timeline(R) {
   const X = (t) => L + ((t - t1) / span) * (W - L - Rr);
   const ra = addMin(R.end, PEAK_ALL[0]), rm = addMin(R.end, PEAK_ALL[1]), rb = addMin(R.end, PEAK_ALL[2]);
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="공연 시작부터 출차 집중까지 시간표">`;
-  s += `<rect x="${X(R.st)}" y="${y - 9}" width="${X(R.end) - X(R.st)}" height="18" rx="9" fill="#e8effa"/>`;
-  s += `<text x="${(X(R.st) + X(R.end)) / 2}" y="${y + 4}" font-size="12" text-anchor="middle" fill="#0047AB">공연 중</text>`;
-  s += `<rect x="${X(ra)}" y="${y - 9}" width="${X(rb) - X(ra)}" height="18" rx="9" fill="#fde9e7"/>`;
-  s += `<text x="${(X(ra) + X(rb)) / 2}" y="${y + 32}" font-size="12" text-anchor="middle" fill="#a8261d" font-weight="700">출차 집중 구간</text>
-    <text x="${(X(ra) + X(rb)) / 2}" y="${y + 48}" font-size="12" text-anchor="middle" fill="#a8261d">${hm(ra)}~${hm(rb)}</text>`;
+  s += `<rect x="${X(R.st)}" y="${y - 9}" width="${X(R.end) - X(R.st)}" height="18" rx="9" fill="#E0F2FE"/>`;
+  s += `<text x="${(X(R.st) + X(R.end)) / 2}" y="${y + 4}" font-size="12" text-anchor="middle" fill="#0369A1">공연 중</text>`;
+  s += `<rect x="${X(ra)}" y="${y - 9}" width="${X(rb) - X(ra)}" height="18" rx="9" fill="#FFE4E6"/>`;
+  s += `<text x="${(X(ra) + X(rb)) / 2}" y="${y + 32}" font-size="12" text-anchor="middle" fill="#BE123C" font-weight="700">출차 집중 구간</text>
+    <text x="${(X(ra) + X(rb)) / 2}" y="${y + 48}" font-size="12" text-anchor="middle" fill="#BE123C">${hm(ra)}~${hm(rb)}</text>`;
   const mk = (t, label, up, color, bold) => {
     const x = X(t), ty = up ? y - 26 : y + 36;
     return `<line x1="${x}" x2="${x}" y1="${y - 14}" y2="${y + 14}" stroke="${color}" stroke-width="3"/>
       <text x="${x}" y="${ty}" font-size="13" text-anchor="middle" fill="${color}" ${bold ? 'font-weight="700"' : ""}>${label}</text>
-      <text x="${x}" y="${ty + (up ? -16 : 16)}" font-size="13" text-anchor="middle" fill="#16202e" font-weight="700">${hm(t)}</text>`;
+      <text x="${x}" y="${ty + (up ? -16 : 16)}" font-size="13" text-anchor="middle" fill="#0F172A" font-weight="700">${hm(t)}</text>`;
   };
-  s += mk(R.st, "시작", false, "#5b6677");
-  s += mk(R.t0, "예측 나옴", true, "#0047AB", true);
-  s += mk(R.end, "끝날 예정", false, "#5b6677");
-  s += mk(rm, "출차 가장 많음(보통)", true, "#E0453A", true);
+  s += mk(R.st, "시작", false, "#64748B");
+  s += mk(R.t0, "예측 나옴", true, "#0369A1", true);
+  s += mk(R.end, "끝날 예정", false, "#64748B");
+  s += mk(rm, "출차 가장 많음(보통)", true, "#E11D48", true);
   // 준비 시간 화살표
   const ay = 158;
-  s += `<line x1="${X(R.t0)}" x2="${X(rm)}" y1="${ay}" y2="${ay}" stroke="#0047AB" stroke-width="2" marker-end="url(#ah)"/>`;
-  s += `<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#0047AB"/></marker></defs>`;
-  s += `<rect x="${(X(R.t0) + X(rm)) / 2 - 92}" y="${ay - 11}" width="184" height="22" rx="11" fill="#0047AB"/>`;
+  s += `<line x1="${X(R.t0)}" x2="${X(rm)}" y1="${ay}" y2="${ay}" stroke="#0369A1" stroke-width="2" marker-end="url(#ah)"/>`;
+  s += `<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#0369A1"/></marker></defs>`;
+  s += `<rect x="${(X(R.t0) + X(rm)) / 2 - 92}" y="${ay - 11}" width="184" height="22" rx="11" fill="#0369A1"/>`;
   s += `<text x="${(X(R.t0) + X(rm)) / 2}" y="${ay + 4}" font-size="13" text-anchor="middle" fill="#fff" font-weight="700">준비할 시간 약 ${dur(rm - R.t0)}</text>`;
   return s + "</svg>";
 }
@@ -252,9 +252,9 @@ function drawOp(R) {
   if (P) {
     const hot = order.filter((g) => P[g].p >= D.gates[g].N_p90);
     hero = `<div class="hero opz"><div class="face">${face("stop")}</div><div>
-      <h2><b style="color:#a8261d">${first}</b>에 인력을 먼저 배치하세요</h2>
+      <h2><b style="color:#BE123C">${first}</b>에 인력을 먼저 배치하세요</h2>
       <p>출차는 <b>${rushA} ~ ${rushB}</b>에 몰려요. 예측이 나온 뒤 <b>약 ${dur(rm - R.t0)}</b> 준비할 수 있어요.</p>
-      <span class="daypill" style="background:${hot.length ? "#fde9e7" : "#e6f5ec"};color:${hot.length ? "#a8261d" : "#1c6f3f"}">${hot.length ? `2025년 상위 10% 수준: ${hot.join("·")}` : "세 출구 모두 2025년 평소 범위"}</span></div></div>`;
+      <span class="daypill" style="background:${hot.length ? "#FFE4E6" : "#D1FAE5"};color:${hot.length ? "#BE123C" : "#047857"}">${hot.length ? `2025년 상위 10% 수준: ${hot.join("·")}` : "세 출구 모두 2025년 평소 범위"}</span></div></div>`;
   } else {
     const lr = lastReady();
     const more = lr ? `<button class="btn" data-go="${lr.date}">지난 공연(${md(lr.date)}) 결과 보기</button>` : "";
@@ -297,9 +297,9 @@ function drawOp(R) {
       <div class="mapbox">${parkMap(levels, P, first, "먼저 배치", true)}<p class="mapnote">길이 굵을수록 그 출구로 나갈 공연 차량이 많아요 (간략 배치도)</p></div>
       <div class="glist">${cards}
         <div class="legend">
-          <span><i style="width:5px;height:16px;background:#0047AB;border-radius:2px"></i>예측</span>
-          <span><i style="width:24px;height:10px;background:#a9c3ec;border-radius:5px"></i>80% 범위</span>
-          <span><i style="width:0;height:16px;border-left:2px dashed #E0453A"></i>2025 상위 10%</span>
+          <span><i style="width:5px;height:16px;background:#0369A1;border-radius:2px"></i>예측</span>
+          <span><i style="width:24px;height:10px;background:#7DD3FC;border-radius:5px"></i>80% 범위</span>
+          <span><i style="width:0;height:16px;border-left:2px dashed #E11D48"></i>2025 상위 10%</span>
         </div></div>
     </div>
     <div class="card timeline"><h3>언제 준비하면 되나</h3>${timeline(R)}</div>
@@ -317,13 +317,13 @@ function renderProof() {
     ["이 서비스", "공연 시작 30분 뒤 주차 수 사용", ts.M, true],
   ];
   const bmax = Math.max(...bars.map((b) => b[2]));
-  const CHECK = `<svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#0047AB"/><path d="M19 33 l9 9 l17 -19" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const CHECK = `<svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#0369A1"/><path d="M19 33 l9 9 l17 -19" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   const tile = (cls, big, title, sub) => `<div class="pk ${cls}"><b>${big}</b><div><div class="pt1">${title}</div><div class="pt2">${sub}</div></div></div>`;
   $("#view-proof").innerHTML = `
     <div class="hero proofz"><div class="face">${CHECK}</div><div>
-      <h2>평소값으로 찍을 때보다 <b style="color:#0047AB">오차가 ${Math.round(ts.reduction * 100)}% 줄었어요</b></h2>
+      <h2>평소값으로 찍을 때보다 <b style="color:#0369A1">오차가 ${Math.round(ts.reduction * 100)}% 줄었어요</b></h2>
       <p>2025년 1~6월 공연으로 배우고, 처음 보는 7~12월 공연 ${ts.shows}개(출구별 ${ts.curves}건)에 그대로 적용한 결과예요.</p>
-      <span class="daypill" style="background:#e8effa;color:#0047AB">계수는 결과를 보기 전 ${D.model.frozen_at_kst}에 고정</span></div></div>
+      <span class="daypill" style="background:#E0F2FE;color:#0369A1">계수는 결과를 보기 전 ${D.model.frozen_at_kst}에 고정</span></div></div>
 
     <div class="vis-grid">
       <div class="card flat">
@@ -399,17 +399,17 @@ function scatter() {
   const X = (v) => L + (Math.min(v, mx) / mx) * (W - L - R), Y = (v) => H - B - (Math.min(v, mx) / mx) * (H - B - T);
   let g = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="2025년 7~12월 실제 출차량과 예측 비교">`;
   for (let v = 0; v <= mx; v += 200) {
-    g += `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#eef1f6"/><text x="${L - 8}" y="${Y(v) + 4}" font-size="12" text-anchor="end" fill="#5b6677">${v}</text>`;
-    g += `<text x="${X(v)}" y="${H - B + 18}" font-size="12" text-anchor="middle" fill="#5b6677">${v}</text>`;
+    g += `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#F1F5F9"/><text x="${L - 8}" y="${Y(v) + 4}" font-size="12" text-anchor="end" fill="#64748B">${v}</text>`;
+    g += `<text x="${X(v)}" y="${H - B + 18}" font-size="12" text-anchor="middle" fill="#64748B">${v}</text>`;
   }
-  g += `<line x1="${X(0)}" y1="${Y(0)}" x2="${X(mx)}" y2="${Y(mx)}" stroke="#16202e" stroke-opacity=".45" stroke-width="1.5" stroke-dasharray="6 5"/>`;
-  g += `<text x="${X(690)}" y="${Y(735)}" font-size="12" fill="#5b6677" text-anchor="end">정확히 맞춤</text>`;
+  g += `<line x1="${X(0)}" y1="${Y(0)}" x2="${X(mx)}" y2="${Y(mx)}" stroke="#0F172A" stroke-opacity=".45" stroke-width="1.5" stroke-dasharray="6 5"/>`;
+  g += `<text x="${X(690)}" y="${Y(735)}" font-size="12" fill="#64748B" text-anchor="end">정확히 맞춤</text>`;
   for (const r of D.back) {
     g += `<line x1="${X(r.N)}" x2="${X(r.N)}" y1="${Y(r.lo)}" y2="${Y(r.hi)}" stroke="${DOT[r.gate]}" stroke-opacity=".22" stroke-width="3"/>`;
     g += `<circle cx="${X(r.N)}" cy="${Y(r.pred)}" r="4.5" fill="${DOT[r.gate]}" stroke="#fff" stroke-width="1"><title>${r.date} ${r.gate} · 실제 ${r.N}대 / 예측 ${r.pred}대 (80% ${r.lo}~${r.hi}) · ${r.show}</title></circle>`;
   }
-  g += `<text x="${(L + W - R) / 2}" y="${H - 8}" font-size="13" text-anchor="middle" fill="#16202e">실제로 나간 공연 차량 (대)</text>`;
-  g += `<text transform="translate(16 ${(T + H - B) / 2}) rotate(-90)" font-size="13" text-anchor="middle" fill="#16202e">예측 (대)</text>`;
+  g += `<text x="${(L + W - R) / 2}" y="${H - 8}" font-size="13" text-anchor="middle" fill="#0F172A">실제로 나간 공연 차량 (대)</text>`;
+  g += `<text transform="translate(16 ${(T + H - B) / 2}) rotate(-90)" font-size="13" text-anchor="middle" fill="#0F172A">예측 (대)</text>`;
   GATES.forEach((gt, i) => { g += `<circle cx="${L + 10 + i * 78}" cy="${14}" r="6" fill="${DOT[gt]}"/><text x="${L + 20 + i * 78}" y="${19}" font-size="13">${gt}</text>`; });
   return g + "</svg>";
 }
